@@ -459,9 +459,13 @@ public class ZooKeeperTokenStore implements DelegationTokenStore {
     if (StringUtils.isNotBlank(aclStr)) {
       this.newNodeAcl = parseACLs(aclStr);
     }
-    rootNode =
+
+    String delegationZnode =
         conf.get(HiveDelegationTokenManager.DELEGATION_TOKEN_STORE_ZK_ZNODE,
-            HiveDelegationTokenManager.DELEGATION_TOKEN_STORE_ZK_ZNODE_DEFAULT) + serverMode;
+            HiveDelegationTokenManager.DELEGATION_TOKEN_STORE_ZK_ZNODE_DEFAULT);
+    // Remove trailing '/'
+    delegationZnode = delegationZnode.replaceAll("/$", "");
+    rootNode = delegationZnode + "/" + serverMode;
 
     try {
       // Install the JAAS Configuration for the runtime
